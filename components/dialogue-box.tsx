@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
@@ -33,6 +33,7 @@ export default function DialogueBox({
 }: DialogueBoxProps) {
   const [typedText, setTypedText] = useState('');
   const [imageFailed, setImageFailed] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
   const completedLineKeyRef = useRef('');
   const currentLineIndex = displayedLines.length;
   const cleanLine = useMemo(() => {
@@ -187,24 +188,32 @@ export default function DialogueBox({
         <div className="flex min-w-0 flex-col gap-4 md:flex-row md:items-stretch md:gap-6">
           <motion.div
             key={milestoneImage || milestoneTitle}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.35 }}
-            className="pixel-story-frame"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: shouldReduceMotion ? 0.15 : 0.45, ease: 'easeOut' }}
+            className="pixel-float"
             aria-hidden="true"
           >
-            {milestoneImage && !imageFailed ? (
-              <Image
-                src={milestoneImage}
-                alt=""
-                fill
-                sizes="(max-width: 768px) 100vw, 360px"
-                className="object-cover"
-                onError={() => setImageFailed(true)}
-              />
-            ) : (
-              <div className="pixel-avatar" />
-            )}
+            <motion.div
+              initial={shouldReduceMotion ? { scale: 1 } : { scale: 0.96 }}
+              animate={{ scale: 1 }}
+              whileHover={shouldReduceMotion ? undefined : { scale: 1.018 }}
+              transition={{ duration: shouldReduceMotion ? 0.15 : 0.45, ease: 'easeOut' }}
+              className="pixel-story-frame pixel-hover"
+            >
+              {milestoneImage && !imageFailed ? (
+                <Image
+                  src={milestoneImage}
+                  alt=""
+                  fill
+                  sizes="(max-width: 768px) 100vw, 360px"
+                  className="story-image-motion object-cover"
+                  onError={() => setImageFailed(true)}
+                />
+              ) : (
+                <div className="pixel-avatar story-image-motion" />
+              )}
+            </motion.div>
           </motion.div>
 
           <div className="min-w-0 flex-1 rounded border-2 border-amber-600/50 bg-slate-950/45 p-4">

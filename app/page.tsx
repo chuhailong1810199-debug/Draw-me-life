@@ -345,6 +345,7 @@ export default function Home() {
   const [isTyping, setIsTyping] = useState(false);
   const [completeTypingSignal, setCompleteTypingSignal] = useState(0);
   const swipeStartXRef = useRef<number | null>(null);
+  const pendingAdvanceRef = useRef(false);
 
   const chapter = STORY_CHAPTERS[currentChapterId];
   const milestone = chapter.milestones[currentMilestoneIndex];
@@ -400,8 +401,19 @@ export default function Home() {
     setIsComplete(false);
   }, []);
 
+  const advanceMilestone = useCallback(() => {
+    triggerSound('next');
+    setCurrentMilestoneIndex((currentIndex) => currentIndex + 1);
+    setDisplayedLines([]);
+    setIsTyping(false);
+  }, [triggerSound]);
+
   const handleContinueMilestone = useCallback(() => {
     if (isTyping || !canAdvanceMilestone) {
+      // Still typing — complete immediately, then auto-advance when done
+      if (!isLastMilestone) {
+        pendingAdvanceRef.current = true;
+      }
       triggerSound('line_complete');
       completeCurrentTyping();
       return;
@@ -412,11 +424,8 @@ export default function Home() {
       return;
     }
 
-    triggerSound('next');
-    setCurrentMilestoneIndex((currentIndex) => currentIndex + 1);
-    setDisplayedLines([]);
-    setIsTyping(false);
-  }, [isTyping, canAdvanceMilestone, isLastMilestone, triggerSound, completeCurrentTyping]);
+    advanceMilestone();
+  }, [isTyping, canAdvanceMilestone, isLastMilestone, triggerSound, completeCurrentTyping, advanceMilestone]);
 
   const handleNextChapter = useCallback(() => {
     if (isTyping || !canAdvanceMilestone) {
@@ -512,6 +521,19 @@ export default function Home() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleNextChapter]);
+
+  // Auto-advance after pending tap: fires once typing fully settles
+  useEffect(() => {
+    if (pendingAdvanceRef.current && canAdvanceMilestone && !isTyping && !isLastMilestone) {
+      pendingAdvanceRef.current = false;
+      advanceMilestone();
+    }
+  }, [canAdvanceMilestone, isTyping, isLastMilestone, advanceMilestone]);
+
+  // Clear pending flag when milestone/chapter changes
+  useEffect(() => {
+    pendingAdvanceRef.current = false;
+  }, [currentChapterId, currentMilestoneIndex]);
 
   return (
     <main className="relative block w-full min-h-[100svh] bg-gradient-to-b from-slate-950/80 via-slate-900/60 to-black/80">

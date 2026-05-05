@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 const BPM = 138;
 const SIXTEENTH = (60 / BPM) / 4;
@@ -127,27 +127,13 @@ function scheduleLoop(ctx: AudioContext, masterGain: GainNode) {
 }
 
 export default function RetroMusic() {
-  const [isMusicOn, setIsMusicOn] = useState(false);
-  const [isUnlocked, setIsUnlocked] = useState(false);
   const ctxRef = useRef<AudioContext | null>(null);
   const masterGainRef = useRef<GainNode | null>(null);
   const loopTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isMusicOnRef = useRef(false);
-  const isUnlockedRef = useRef(false);
-
-  useEffect(() => {
-    const saved = window.localStorage.getItem('pixel-story-music');
-    const on = saved === 'true';
-    setIsMusicOn(on);
-    isMusicOnRef.current = on;
-  }, []);
-
-  useEffect(() => {
-    isMusicOnRef.current = isMusicOn;
-    window.localStorage.setItem('pixel-story-music', String(isMusicOn));
-  }, [isMusicOn]);
+  const isPlayingRef = useRef(false);
 
   const stopMusic = () => {
+    isPlayingRef.current = false;
     if (loopTimerRef.current) {
       clearTimeout(loopTimerRef.current);
       loopTimerRef.current = null;
@@ -158,7 +144,7 @@ export default function RetroMusic() {
   };
 
   const playLoop = (ctx: AudioContext, gain: GainNode) => {
-    if (!isMusicOnRef.current) return;
+    if (!isPlayingRef.current) return;
     if (loopTimerRef.current) {
       clearTimeout(loopTimerRef.current);
       loopTimerRef.current = null;
@@ -169,6 +155,12 @@ export default function RetroMusic() {
   };
 
   const startMusic = () => {
+    if (isPlayingRef.current) {
+      return;
+    }
+
+    isPlayingRef.current = true;
+
     if (!ctxRef.current) {
       ctxRef.current = new AudioContext();
       const gain = ctxRef.current.createGain();
@@ -190,14 +182,12 @@ export default function RetroMusic() {
 
   useEffect(() => {
     const unlock = () => {
-      isUnlockedRef.current = true;
-      setIsUnlocked(true);
-      if (isMusicOnRef.current) {
-        startMusic();
-      }
+      startMusic();
     };
+
     window.addEventListener('pointerdown', unlock, { once: true });
     window.addEventListener('keydown', unlock, { once: true });
+
     return () => {
       window.removeEventListener('pointerdown', unlock);
       window.removeEventListener('keydown', unlock);
@@ -209,29 +199,5 @@ export default function RetroMusic() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const toggle = () => {
-    setIsMusicOn((prev) => {
-      const next = !prev;
-      isMusicOnRef.current = next;
-      if (next && (isUnlocked || isUnlockedRef.current)) {
-        isUnlockedRef.current = true;
-        startMusic();
-      } else {
-        stopMusic();
-      }
-      return next;
-    });
-  };
-
-  return (
-    <button
-      type="button"
-      onClick={toggle}
-      className="pixel-panel pixel-text-wrap fixed right-4 top-14 z-50 rounded border-2 border-amber-500 bg-slate-950/85 px-3 py-2 font-mono text-xs text-amber-300 transition-colors hover:bg-slate-900"
-      aria-pressed={isMusicOn}
-      aria-label={isMusicOn ? 'Music off' : 'Music on'}
-    >
-      {isMusicOn ? '♪ MUSIC ON' : '♪ MUSIC OFF'}
-    </button>
-  );
+  return null;
 }

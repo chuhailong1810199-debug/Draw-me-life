@@ -36,7 +36,11 @@ const normalizeEffect = (effect: SoundEffect) => {
   return effect;
 };
 
-export default function SoundSystem() {
+type SoundSystemProps = {
+  showControl?: boolean;
+};
+
+export default function SoundSystem({ showControl = false }: SoundSystemProps) {
   const [isMuted, setIsMuted] = useState(false);
   const audioMapRef = useRef<Partial<Record<keyof typeof SOUND_CONFIG, HTMLAudioElement>>>({});
   const isUnlockedRef = useRef(false);
@@ -108,6 +112,10 @@ export default function SoundSystem() {
   const toggleMute = () => {
     setIsMuted((currentMuted) => !currentMuted);
   };
+
+  if (!showControl) {
+    return null;
+  }
 
   return (
     <button

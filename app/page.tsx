@@ -4,6 +4,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import DialogueBox from '@/components/dialogue-box';
 import GameState, { type PlayerStats } from '@/components/game-state';
+import SoundSystem from '@/components/sound-system';
+import RetroMusic from '@/components/retro-music';
 
 type SoundEffect =
   | 'type'
@@ -537,6 +539,8 @@ export default function Home() {
 
   return (
     <main className="relative block w-full min-h-[100svh] bg-gradient-to-b from-slate-950/80 via-slate-900/60 to-black/80">
+      <SoundSystem />
+      <RetroMusic />
       <div className="fixed inset-0 z-0 opacity-5 pointer-events-none">
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
           <defs>

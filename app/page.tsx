@@ -103,7 +103,7 @@ const STORY_CHAPTERS: Record<string, StoryChapter> = {
         title: 'Hoa Sen University - Marketing',
         year: 'University',
         location: 'Vietnam',
-        image: '/story/hoa-sen-animated.mp4',
+        image: '/story/hoa-sen.png',
         dialogue: [
           '> I pursued Marketing at Hoa Sen University.',
           '> I learned how people think, choose, and connect.',
@@ -113,7 +113,7 @@ const STORY_CHAPTERS: Record<string, StoryChapter> = {
         title: '2 Years Living in Singapore',
         year: 'Next Chapter',
         location: 'Singapore',
-        image: '/story/singapore-animated.mp4',
+        image: '/story/singapore.png',
         dialogue: [
           '> Later, I spent 2 years living in Singapore.',
           '> That was where everything began to change...',

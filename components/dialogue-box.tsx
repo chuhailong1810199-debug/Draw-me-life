@@ -12,7 +12,12 @@ interface DialogueBoxProps {
   onTypingChange?: (isTyping: boolean) => void;
   completeTypingSignal?: number;
   milestoneTitle?: string;
+  milestoneSubtitle?: string;
   milestoneImage?: string;
+  milestoneImages?: Array<{
+    src: string;
+    label: string;
+  }>;
   milestoneYear?: string;
   milestoneLocation?: string;
   footerText?: string;
@@ -37,7 +42,9 @@ export default function DialogueBox({
   onTypingChange,
   completeTypingSignal = 0,
   milestoneTitle,
+  milestoneSubtitle,
   milestoneImage,
+  milestoneImages = [],
   milestoneYear,
   milestoneLocation,
   footerText = '[PRESS NEXT TO CONTINUE]',
@@ -47,6 +54,7 @@ export default function DialogueBox({
   const shouldReduceMotion = useReducedMotion();
   const completedLineKeyRef = useRef('');
   const isVideo = isVideoAsset(milestoneImage);
+  const hasImagePair = milestoneImages.length > 0;
   const currentLineIndex = displayedLines.length;
   const cleanLine = useMemo(() => {
     if (currentLineIndex >= lines.length) {
@@ -64,7 +72,39 @@ export default function DialogueBox({
 
   useEffect(() => {
     setImageFailed(false);
-  }, [milestoneImage]);
+  }, [milestoneImage, milestoneImages]);
+
+  const renderMedia = (src: string, className = '') => {
+    const isVideo = isVideoAsset(src);
+
+    if (isVideo) {
+      return (
+        <video
+          key={src}
+          className={`h-full w-full object-cover ${className}`}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          onError={() => setImageFailed(true)}
+        >
+          <source src={src} type={src.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
+        </video>
+      );
+    }
+
+    return (
+      <Image
+        src={src}
+        alt="story image"
+        fill
+        sizes="(max-width: 768px) 100vw, 360px"
+        className={`object-cover ${className}`}
+        onError={() => setImageFailed(true)}
+      />
+    );
+  };
 
   // Safety: if all lines are already displayed (e.g. after cascade), ensure isTyping=false
   useEffect(() => {
@@ -233,24 +273,24 @@ export default function DialogueBox({
             className="story-image-motion pixel-story-frame pixel-hover"
             aria-hidden="true"
           >
-            {milestoneImage && !imageFailed && isVideo ? (
+            {hasImagePair && !imageFailed ? (
+              <div className="before-after-grid">
+                {milestoneImages.map((asset) => (
+                  <div className="before-after-card" key={`${asset.label}-${asset.src}`}>
+                    <div className="before-after-media">
+                      {renderMedia(asset.src)}
+                    </div>
+                    <div className="before-after-label">{asset.label}</div>
+                  </div>
+                ))}
+              </div>
+            ) : milestoneImage && !imageFailed && isVideo ? (
               <motion.div
                 className="absolute inset-0"
                 animate={shouldReduceMotion ? { scale: 1 } : { scale: [1, 1.045, 1] }}
                 transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
               >
-                <video
-                  key={milestoneImage}
-                  className="h-full w-full object-cover"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  preload="metadata"
-                  onError={() => setImageFailed(true)}
-                >
-                  <source src={milestoneImage} type={milestoneImage.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
-                </video>
+                {renderMedia(milestoneImage)}
               </motion.div>
             ) : milestoneImage && !imageFailed ? (
               <motion.div
@@ -258,14 +298,7 @@ export default function DialogueBox({
                 animate={shouldReduceMotion ? { scale: 1 } : { scale: [1, 1.045, 1] }}
                 transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
               >
-                <Image
-                  src={milestoneImage}
-                  alt=""
-                  fill
-                  sizes="(max-width: 768px) 100vw, 360px"
-                  className="object-cover"
-                  onError={() => setImageFailed(true)}
-                />
+                {renderMedia(milestoneImage)}
               </motion.div>
             ) : (
               <div className="pixel-avatar" />
@@ -274,10 +307,13 @@ export default function DialogueBox({
 
           <div className="min-w-0 flex-1 rounded border-2 border-amber-600/50 bg-slate-950/45 p-4">
             <div className="pixel-text-wrap min-h-[10rem] space-y-2 font-mono text-xs text-amber-200 sm:text-sm md:min-h-48 md:text-base">
-              {(milestoneTitle || milestoneYear || milestoneLocation) && (
+              {(milestoneTitle || milestoneSubtitle || milestoneYear || milestoneLocation) && (
                 <div className="pixel-text-wrap mb-4 border-b border-amber-600/40 pb-3">
                   {milestoneTitle && (
                     <p className="pixel-text-wrap text-sm text-amber-400 md:text-base">{milestoneTitle}</p>
+                  )}
+                  {milestoneSubtitle && (
+                    <p className="pixel-text-wrap mt-2 text-xs text-amber-300/80">{milestoneSubtitle}</p>
                   )}
                   {(milestoneYear || milestoneLocation) && (
                     <p className="pixel-text-wrap mt-1 text-xs text-amber-600/80">

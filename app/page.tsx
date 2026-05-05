@@ -26,8 +26,13 @@ type Choice = {
 
 type Milestone = {
   title: string;
+  subtitle?: string;
   dialogue: string[];
   image: string;
+  images?: Array<{
+    src: string;
+    label: string;
+  }>;
   year?: string;
   location?: string;
 };
@@ -66,13 +71,13 @@ const STORY_CHAPTERS: Record<string, StoryChapter> = {
   origin: {
     id: 'origin',
     title: 'The Beginning - A Couch Dweller',
-    image: '/story/trung-vuong-animated.mp4',
+    image: '/story/trung-vuong.png',
     milestones: [
       {
         title: 'Trung Vuong Primary School',
         year: 'Early Years',
         location: 'Vietnam',
-        image: '/story/trung-vuong-animated.mp4',
+        image: '/story/trung-vuong.png',
         dialogue: [
           '> My journey started in Vietnam.',
           '> I studied at Trung Vuong Primary School.',
@@ -83,7 +88,7 @@ const STORY_CHAPTERS: Record<string, StoryChapter> = {
         title: 'Tran Phu Secondary School',
         year: 'Secondary School',
         location: 'Vietnam',
-        image: '/story/tran-phu-animated.mp4',
+        image: '/story/tran-phu.png',
         dialogue: [
           '> Then I continued at Tran Phu Secondary School.',
           '> The world grew wider, one subject at a time.',
@@ -93,7 +98,7 @@ const STORY_CHAPTERS: Record<string, StoryChapter> = {
         title: 'Vung Tau High School',
         year: 'High School',
         location: 'Vung Tau',
-        image: '/story/vung-tau-high-animated.mp4',
+        image: '/story/vung-tau-high.png',
         dialogue: [
           '> After that, I attended Vung Tau High School.',
           '> New pressure appeared. New confidence followed.',
@@ -140,26 +145,49 @@ const STORY_CHAPTERS: Record<string, StoryChapter> = {
   },
   'fitness-quest': {
     id: 'fitness-quest',
-    title: 'Chapter 1A: The Fitness Quest',
-    image: '/story/me-pixel.png',
+    title: 'Chapter 2: The Fitness Awakening',
+    image: '/story/gym-before-retro.png',
     milestones: [
       {
-        title: 'The First Rep',
-        year: '2019',
-        image: '/story/me-pixel.png',
+        title: 'The Apartment Gym Era',
+        subtitle: 'Discipline Before Results',
+        image: '/story/gym-before-retro.png',
+        images: [
+          { src: '/story/gym-before-retro.png', label: 'BEFORE' },
+          { src: '/story/gym-after-retro.png', label: 'AFTER' },
+        ],
         dialogue: [
-          '> In January 2019, I chose the harder road.',
-          '> I learned to lift. I learned to run.',
+          '> I started training at a small apartment gym.',
+          '> There were very few machines and limited equipment.',
+          '> But I still showed up 5 to 6 times per week.',
+          '> I kept doing that for almost one year.',
+          '> I changed programs. I tried different methods.',
+          '> But the results were still very minor.',
+          '> Then one day, I joined an online fitness app.',
+          '> For the first time, I followed a structured program.',
+          '> I tracked volume, intensity, and exercise selection.',
+          '> I also tracked my nutrition seriously.',
+          '> Protein. Carbs. Fats. Fiber.',
+          '> That was when my body finally started to change.',
+          '> I achieved my first real goal: building muscle.',
         ],
       },
       {
-        title: 'Fitness Level Up',
-        year: '2019',
-        image: '/story/me-pixel.png',
+        title: 'From Marketing Graduate to Coach',
+        subtitle: 'Choosing the Life I Actually Wanted',
+        image: '/story/coach-version.png',
+        images: [
+          { src: '/story/office-before-retro.png', label: 'OFFICE LIFE' },
+          { src: '/story/coach-version.png', label: 'COACH LIFE' },
+        ],
         dialogue: [
-          '> The couch lost its grip one workout at a time.',
-          '> Fitness Level Up!',
-          '> Health: 45/100',
+          '> I graduated in Marketing from Hoa Sen University.',
+          '> But deep down, I knew office life was not for me.',
+          '> I spent time thinking about what I really wanted.',
+          '> Eventually, I chose the professional coaching path.',
+          '> Fitness became more than training.',
+          '> It became my career, my craft, and my identity.',
+          '> Today, coaching is my main work.',
         ],
       },
     ],
@@ -183,11 +211,11 @@ const STORY_CHAPTERS: Record<string, StoryChapter> = {
   'ai-awakening': {
     id: 'ai-awakening',
     title: 'Chapter 1B: The AI Awakening',
-    image: '/story/me-pixel.png',
+    image: '/story/singapore.png',
     milestones: [
       {
         title: 'First AI Spark',
-        image: '/story/me-pixel.png',
+        image: '/story/singapore.png',
         dialogue: [
           '> My mind craved growth.',
           '> I discovered AI. It fascinated me.',
@@ -195,7 +223,7 @@ const STORY_CHAPTERS: Record<string, StoryChapter> = {
       },
       {
         title: 'Skill Tree Unlocked',
-        image: '/story/me-pixel.png',
+        image: '/story/hoa-sen.png',
         dialogue: [
           '> I read papers, built projects, experimented.',
           '> Intelligence: 60/100',
@@ -223,11 +251,11 @@ const STORY_CHAPTERS: Record<string, StoryChapter> = {
   'creator-fitness': {
     id: 'creator-fitness',
     title: 'Chapter 2A: Creator Arc - Fitness',
-    image: '/story/me-pixel.png',
+    image: '/story/coach-version.png',
     milestones: [
       {
         title: 'Posting the Quest Log',
-        image: '/story/me-pixel.png',
+        image: '/story/coach-version.png',
         dialogue: [
           '> Then came a new calling: sharing knowledge.',
           '> I started creating content about fitness and discipline.',
@@ -235,7 +263,7 @@ const STORY_CHAPTERS: Record<string, StoryChapter> = {
       },
       {
         title: 'The Party Grew',
-        image: '/story/me-pixel.png',
+        image: '/story/gym-after-retro.png',
         dialogue: [
           '> Some watched. Some listened. Some began.',
           '> Influence +40',
@@ -248,11 +276,11 @@ const STORY_CHAPTERS: Record<string, StoryChapter> = {
   'creator-ai': {
     id: 'creator-ai',
     title: 'Chapter 2B: Creator Arc - AI',
-    image: '/story/me-pixel.png',
+    image: '/story/office-before-retro.png',
     milestones: [
       {
         title: 'Build Log Begins',
-        image: '/story/me-pixel.png',
+        image: '/story/office-before-retro.png',
         dialogue: [
           '> I shipped experiments into the open.',
           '> Fitness taught persistence. AI gave it a laboratory.',
@@ -260,7 +288,7 @@ const STORY_CHAPTERS: Record<string, StoryChapter> = {
       },
       {
         title: 'A Beacon Online',
-        image: '/story/me-pixel.png',
+        image: '/story/singapore.png',
         dialogue: [
           '> The posts became lessons. The lessons became momentum.',
           '> Influence +45',
@@ -273,11 +301,11 @@ const STORY_CHAPTERS: Record<string, StoryChapter> = {
   'present-athlete': {
     id: 'present-athlete',
     title: 'The Present State - Disciplined Hero',
-    image: '/story/me-pixel.png',
+    image: '/story/coach-version.png',
     milestones: [
       {
         title: 'Disciplined Hero',
-        image: '/story/me-pixel.png',
+        image: '/story/coach-version.png',
         dialogue: [
           '> I am no longer that couch dweller.',
           '> Fitness became the foundation.',
@@ -291,11 +319,11 @@ const STORY_CHAPTERS: Record<string, StoryChapter> = {
   'present-builder': {
     id: 'present-builder',
     title: 'The Present State - AI Builder',
-    image: '/story/me-pixel.png',
+    image: '/story/office-before-retro.png',
     milestones: [
       {
         title: 'AI Builder',
-        image: '/story/me-pixel.png',
+        image: '/story/office-before-retro.png',
         dialogue: [
           '> I am no longer that couch dweller.',
           '> Intelligence became the engine.',
@@ -309,11 +337,11 @@ const STORY_CHAPTERS: Record<string, StoryChapter> = {
   'present-scholar': {
     id: 'present-scholar',
     title: 'The Present State - Quiet Scholar',
-    image: '/story/me-pixel.png',
+    image: '/story/hoa-sen.png',
     milestones: [
       {
         title: 'Quiet Scholar',
-        image: '/story/me-pixel.png',
+        image: '/story/hoa-sen.png',
         dialogue: [
           '> I am no longer that couch dweller.',
           '> I chose depth over noise.',
@@ -619,7 +647,9 @@ export default function Home() {
                 onTypingChange={setIsTyping}
                 completeTypingSignal={completeTypingSignal}
                 milestoneTitle={milestone.title}
+                milestoneSubtitle={milestone.subtitle}
                 milestoneImage={milestone.image || chapter.image}
+                milestoneImages={milestone.images}
                 milestoneYear={milestone.year}
                 milestoneLocation={milestone.location}
                 footerText={isLastMilestone ? '[TAP TO CHOOSE]' : '[TAP TO CONTINUE]'}

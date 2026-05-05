@@ -18,6 +18,17 @@ interface DialogueBoxProps {
   footerText?: string;
 }
 
+const VIDEO_EXTENSIONS = ['.mp4', '.webm'];
+
+const isVideoAsset = (src?: string) => {
+  if (!src) {
+    return false;
+  }
+
+  const assetPath = src.split('?')[0]?.toLowerCase() ?? '';
+  return VIDEO_EXTENSIONS.some((extension) => assetPath.endsWith(extension));
+};
+
 export default function DialogueBox({
   lines,
   displayedLines,
@@ -35,6 +46,7 @@ export default function DialogueBox({
   const [imageFailed, setImageFailed] = useState(false);
   const shouldReduceMotion = useReducedMotion();
   const completedLineKeyRef = useRef('');
+  const isVideo = isVideoAsset(milestoneImage);
   const currentLineIndex = displayedLines.length;
   const cleanLine = useMemo(() => {
     if (currentLineIndex >= lines.length) {
@@ -221,7 +233,26 @@ export default function DialogueBox({
             className="story-image-motion pixel-story-frame pixel-hover"
             aria-hidden="true"
           >
-            {milestoneImage && !imageFailed ? (
+            {milestoneImage && !imageFailed && isVideo ? (
+              <motion.div
+                className="absolute inset-0"
+                animate={shouldReduceMotion ? { scale: 1 } : { scale: [1, 1.045, 1] }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <video
+                  key={milestoneImage}
+                  className="h-full w-full object-cover"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
+                  onError={() => setImageFailed(true)}
+                >
+                  <source src={milestoneImage} type={milestoneImage.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
+                </video>
+              </motion.div>
+            ) : milestoneImage && !imageFailed ? (
               <motion.div
                 className="absolute inset-0"
                 animate={shouldReduceMotion ? { scale: 1 } : { scale: [1, 1.045, 1] }}

@@ -66,13 +66,13 @@ const STORY_CHAPTERS: Record<string, StoryChapter> = {
   origin: {
     id: 'origin',
     title: 'The Beginning - A Couch Dweller',
-    image: '/story/trung-vuong.png',
+    image: '/story/trung-vuong-animated.mp4',
     milestones: [
       {
         title: 'Trung Vuong Primary School',
         year: 'Early Years',
         location: 'Vietnam',
-        image: '/story/trung-vuong.png',
+        image: '/story/trung-vuong-animated.mp4',
         dialogue: [
           '> My journey started in Vietnam.',
           '> I studied at Trung Vuong Primary School.',
@@ -83,7 +83,7 @@ const STORY_CHAPTERS: Record<string, StoryChapter> = {
         title: 'Tran Phu Secondary School',
         year: 'Secondary School',
         location: 'Vietnam',
-        image: '/story/tran-phu.png',
+        image: '/story/tran-phu-animated.mp4',
         dialogue: [
           '> Then I continued at Tran Phu Secondary School.',
           '> The world grew wider, one subject at a time.',
@@ -93,7 +93,7 @@ const STORY_CHAPTERS: Record<string, StoryChapter> = {
         title: 'Vung Tau High School',
         year: 'High School',
         location: 'Vung Tau',
-        image: '/story/vung-tau-high.png',
+        image: '/story/vung-tau-high-animated.mp4',
         dialogue: [
           '> After that, I attended Vung Tau High School.',
           '> New pressure appeared. New confidence followed.',
@@ -103,7 +103,7 @@ const STORY_CHAPTERS: Record<string, StoryChapter> = {
         title: 'Hoa Sen University - Marketing',
         year: 'University',
         location: 'Vietnam',
-        image: '/story/hoa-sen.png',
+        image: '/story/hoa-sen-animated.mp4',
         dialogue: [
           '> I pursued Marketing at Hoa Sen University.',
           '> I learned how people think, choose, and connect.',
@@ -113,7 +113,7 @@ const STORY_CHAPTERS: Record<string, StoryChapter> = {
         title: '2 Years Living in Singapore',
         year: 'Next Chapter',
         location: 'Singapore',
-        image: '/story/singapore.png',
+        image: '/story/singapore-animated.mp4',
         dialogue: [
           '> Later, I spent 2 years living in Singapore.',
           '> That was where everything began to change...',

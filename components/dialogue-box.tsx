@@ -188,32 +188,57 @@ export default function DialogueBox({
         <div className="flex min-w-0 flex-col gap-4 md:flex-row md:items-stretch md:gap-6">
           <motion.div
             key={milestoneImage || milestoneTitle}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: shouldReduceMotion ? 0.15 : 0.45, ease: 'easeOut' }}
-            className="pixel-float"
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 0 }}
+            animate={
+              shouldReduceMotion
+                ? { opacity: 1 }
+                : {
+                    opacity: 1,
+                    scale: [1, 1.025, 1],
+                    y: [0, -8, 0],
+                  }
+            }
+            whileHover={
+              shouldReduceMotion
+                ? undefined
+                : {
+                    rotateX: 1.8,
+                    rotateY: -2.2,
+                    scale: 1.035,
+                  }
+            }
+            transition={
+              shouldReduceMotion
+                ? { duration: 0.15, ease: 'easeOut' }
+                : {
+                    opacity: { duration: 0.35, ease: 'easeOut' },
+                    scale: { duration: 5.2, repeat: Infinity, ease: 'easeInOut' },
+                    y: { duration: 5.2, repeat: Infinity, ease: 'easeInOut' },
+                    rotateX: { duration: 0.18, ease: 'easeOut' },
+                    rotateY: { duration: 0.18, ease: 'easeOut' },
+                  }
+            }
+            className="story-image-motion pixel-story-frame pixel-hover"
             aria-hidden="true"
           >
-            <motion.div
-              initial={shouldReduceMotion ? { scale: 1 } : { scale: 0.96 }}
-              animate={{ scale: 1 }}
-              whileHover={shouldReduceMotion ? undefined : { scale: 1.018 }}
-              transition={{ duration: shouldReduceMotion ? 0.15 : 0.45, ease: 'easeOut' }}
-              className="pixel-story-frame pixel-hover"
-            >
-              {milestoneImage && !imageFailed ? (
+            {milestoneImage && !imageFailed ? (
+              <motion.div
+                className="absolute inset-0"
+                animate={shouldReduceMotion ? { scale: 1 } : { scale: [1, 1.045, 1] }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+              >
                 <Image
                   src={milestoneImage}
                   alt=""
                   fill
                   sizes="(max-width: 768px) 100vw, 360px"
-                  className="story-image-motion object-cover"
+                  className="object-cover"
                   onError={() => setImageFailed(true)}
                 />
-              ) : (
-                <div className="pixel-avatar story-image-motion" />
-              )}
-            </motion.div>
+              </motion.div>
+            ) : (
+              <div className="pixel-avatar" />
+            )}
           </motion.div>
 
           <div className="min-w-0 flex-1 rounded border-2 border-amber-600/50 bg-slate-950/45 p-4">

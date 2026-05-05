@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import DialogueBox from '@/components/dialogue-box';
 import GameState, { type PlayerStats } from '@/components/game-state';
@@ -344,6 +344,7 @@ export default function Home() {
   const [isComplete, setIsComplete] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [completeTypingSignal, setCompleteTypingSignal] = useState(0);
+  const swipeStartXRef = useRef<number | null>(null);
 
   const chapter = STORY_CHAPTERS[currentChapterId];
   const milestone = chapter.milestones[currentMilestoneIndex];
@@ -399,7 +400,7 @@ export default function Home() {
     setIsComplete(false);
   }, []);
 
-  const handleContinueMilestone = () => {
+  const handleContinueMilestone = useCallback(() => {
     if (isTyping || !canAdvanceMilestone) {
       triggerSound('line_complete');
       completeCurrentTyping();
@@ -407,6 +408,7 @@ export default function Home() {
     }
 
     if (isLastMilestone) {
+      // last milestone — choices or NEXT button handles progression
       return;
     }
 
@@ -414,7 +416,7 @@ export default function Home() {
     setCurrentMilestoneIndex((currentIndex) => currentIndex + 1);
     setDisplayedLines([]);
     setIsTyping(false);
-  };
+  }, [isTyping, canAdvanceMilestone, isLastMilestone, triggerSound, completeCurrentTyping]);
 
   const handleNextChapter = useCallback(() => {
     if (isTyping || !canAdvanceMilestone) {
@@ -567,8 +569,20 @@ export default function Home() {
             </AnimatePresence>
 
             <div
-              className="relative z-20 touch-manipulation"
-              onClick={!canAdvanceMilestone ? handleContinueMilestone : undefined}
+              className="relative z-20 touch-manipulation cursor-pointer select-none"
+              onClick={handleContinueMilestone}
+              onTouchStart={(e) => {
+                swipeStartXRef.current = e.touches[0]?.clientX ?? null;
+              }}
+              onTouchEnd={(e) => {
+                const startX = swipeStartXRef.current;
+                const endX = e.changedTouches[0]?.clientX ?? null;
+                swipeStartXRef.current = null;
+                if (startX !== null && endX !== null && Math.abs(endX - startX) > 50) {
+                  // horizontal swipe — let the buttons handle it, don't fire click
+                  return;
+                }
+              }}
             >
               <DialogueBox
                 key={`${currentChapterId}-${currentMilestoneIndex}`}
@@ -582,7 +596,7 @@ export default function Home() {
                 milestoneImage={milestone.image || chapter.image}
                 milestoneYear={milestone.year}
                 milestoneLocation={milestone.location}
-                footerText={isLastMilestone ? '[CHOOSE OR CONTINUE]' : '[PRESS CONTINUE]'}
+                footerText={isLastMilestone ? '[TAP TO CHOOSE]' : '[TAP TO CONTINUE]'}
               />
             </div>
 

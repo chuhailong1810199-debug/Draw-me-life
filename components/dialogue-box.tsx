@@ -53,6 +53,13 @@ export default function DialogueBox({
     setImageFailed(false);
   }, [milestoneImage]);
 
+  // Safety: if all lines are already displayed (e.g. after cascade), ensure isTyping=false
+  useEffect(() => {
+    if (currentLineIndex >= lines.length) {
+      onTypingChange?.(false);
+    }
+  }, [currentLineIndex, lines.length, onTypingChange]);
+
   useEffect(() => {
     if (currentLineIndex >= lines.length) {
       onTypingChange?.(false);
